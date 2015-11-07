@@ -12,8 +12,8 @@ import java.io.IOException;
  */
 public class ListLinks {
     public static void main(String[] args) throws IOException {
-        Validate.isTrue(args.length == 1, "usage: supply url to fetch");
-        String url = args[0];
+        //Validate.isTrue(args.length == 1, "usage: supply url to fetch");
+        String url = "http://www.theworldsworstwebsiteever.com/";
         print("Fetching %s...", url);
 
         Document doc = Jsoup.connect(url).get();

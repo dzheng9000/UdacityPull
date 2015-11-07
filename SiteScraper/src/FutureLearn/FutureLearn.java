@@ -69,19 +69,19 @@ public class FutureLearn
 		java.sql.Connection connection = DriverManager.getConnection(DB_URL, USER, PASS);
 		System.out.print("\t\tSuccessful\n\n"); 
 		
-		//loop through the arraylist urlXSS
+		//Loop through arraylist urlXSS
 		for(int i=0; i<urlXSS.size();i++)
 		{
 			String furl = (String) urlXSS.get(i);  //get website url
+			System.out.println("URL: " + furl); //return the website url
 			Document doc = Jsoup.connect(furl).get(); //get HTML code from website
 			
 			//Find the link
-			Elements link = doc.select("a[href*=/courses]"); //get links with hyperlinks containing /courses/
+			Elements link = doc.select("a[href*=courses]"); //get links with hyperlinks containing /courses/
 			
 			for(int j = 0; j < link.size(); j++)
 			{
-				//System.out.println(link.get(j).attr("href"));
-				System.out.println(link.get(j).attr("href"));
+				System.out.println("Link: " + link.get(j).attr("href"));
 			}
 			
 			/*
