@@ -91,46 +91,65 @@ public class FutureLearn
 			Document doc = Jsoup.connect(furl).get(); //get HTML code from the website
 			//System.out.println("HTML document: " + doc); // return the HTML code from the website
 			
-			//Find the courseNames
+			//ELEMENTS
 			Elements link = doc.select("a[href*=courses]"); //get links with hyperlinks containing /courses/
+			Elements short_desc = doc.select("p[class=introduction]"); //get short descriptions of each course
 			
+			//Arraylist for Course Information 
 			ArrayList courseNames = new ArrayList<String>(); //holds the course names
 			ArrayList courseLinks = new ArrayList<String>(); //holds the course links
+			ArrayList courseShortDescriptions = new ArrayList<String>();
+			
 			//System.out.println(link.size());
-			for(int j = 0; j < link.size(); j++)
+			for(int j = 0; j < link.size(); j++) //NOTE: LINKS SIZE IS 61 (AKO 11/7/15 3:40pm)
 			{
-				String courseName = link.get(j).text();
-				String courseLink = link.get(j).attr("href");
+				//ADDING COURSE NAMES + COURSE LINKS
+				String courseName = link.get(j).text(); //course name 
+				String courseLink = link.get(j).attr("href"); //course link
+				
 				if(courseName.equals("") || courseName.equals("More") || courseName.equals("Courses") || courseName.equals("View all categories"))
 				{
 					//don't add to courseNames
 				}
-				else
+				else //add course name and course link that do NOT contain "", "More", "Courses", "View all categories"
 				{
-					courseNames.add(courseName);
-					courseLinks.add(courseLink);
+					courseLink = "https://www.futurelearn.com" + courseLink; //update courseLink url to include "https://www.futurelearn.com"
+					courseNames.add(courseName); 
+					courseLinks.add(courseLink); 
+					
 				}
 			}
-			
-			System.out.println(courseNames.size());
-			for(int a = 0; a < courseNames.size(); a++)
+	
+			//ADD SHORT DESCRIPTIONS 
+			for(int j = 0; j < courseNames.size(); j++)
 			{
-				System.out.println("Course Name: " + courseNames.get(a));
-				System.out.println("Course LinkL " + courseLinks.get(a));
-				System.out.println();
+				String shortDescription = short_desc.get(j).text();
+				courseShortDescriptions.add(shortDescription);
 			}
 			
 			/*
-			  TEST
+			  TEST CASES
 			  System.out.println("furl: " + furl);
 			  System.out.println("doc: " + doc);
 			  System.out.println("link: " + link);
-			  for(int i = 0; i < link.size(); i++)
+			  System.out.println(courseNames.size());
+				for(int a = 0; a < courseNames.size(); a++)
 				{
-					System.out.println(link.get(i).attr("href"));
+					System.out.println("Course Name: " + courseNames.get(a));
+					System.out.println("Course Link: " + courseLinks.get(a));
+					System.out.println("Course Short Description: " + courseShortDescriptions.get(a));
+					System.out.println();
 				}
 			END: TEST
 			*/
+			
+			for(int a = 0; a < courseNames.size(); a++)
+			{
+				System.out.println("Course Name: " + courseNames.get(a));
+				System.out.println("Course Link: " + courseLinks.get(a));
+				System.out.println("Course Short Description: " + courseShortDescriptions.get(a));
+				System.out.println();
+			}
 			
 		} //end loop
 		}//end main
