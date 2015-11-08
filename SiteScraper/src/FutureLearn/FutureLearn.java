@@ -47,18 +47,18 @@ public class FutureLearn
 	{
 		//URLS
 		String url1 = "https://www.futurelearn.com/courses/categories/teaching-and-studying"; 			//FutureLearn: Teaching & Studying
-//		String url2 = "https://www.futurelearn.com/courses/categories/business-and-management"; 		//FutureLearn: Business & Management 
-//		String url3 = "https://www.futurelearn.com/courses/categories/creative-arts-and-media"; 		//FutureLearn: Creative Arts & Media
-//		String url4 = "https://www.futurelearn.com/courses/categories/health-and-psychology"; 			//FutureLearn: Health and Psychology 
-//		String url5 = "https://www.futurelearn.com/courses/categories/history"; 						//FutureLearn: History 
-//		String url6 = "https://www.futurelearn.com/courses/categories/languages-and-cultures"; 			//FutureLearn: Languages & Cultures
-//		String url7 = "https://www.futurelearn.com/courses/categories/law"; 							//FutureLearn: Law
-//		String url8 = "https://www.futurelearn.com/courses/categories/literature"; 						//FutureLearn: Literature
-//		String url9 = "https://www.futurelearn.com/courses/categories/nature-and-environment"; 			//FutureLearn: Nature & Environment 
-//		String url10 = "https://www.futurelearn.com/courses/categories/online-and-digital";				//FutureLearn: Online & Digital 
-//		String url11 = "https://www.futurelearn.com/courses/categories/politics-and-the-modern-world"; 	//FutureLearn: Politics & the Modern World 
-//		String url12 = "https://www.futurelearn.com/courses/categories/science-maths-and-technology"; 	//FutureLearn: Science, Maths, & Technology 
-//		String url13 = "https://www.futurelearn.com/courses/categories/sport-and-leisure";				//FutureLearn: Sport & Leisure
+		String url2 = "https://www.futurelearn.com/courses/categories/business-and-management"; 		//FutureLearn: Business & Management 
+		String url3 = "https://www.futurelearn.com/courses/categories/creative-arts-and-media"; 		//FutureLearn: Creative Arts & Media
+		String url4 = "https://www.futurelearn.com/courses/categories/health-and-psychology"; 			//FutureLearn: Health and Psychology 
+		String url5 = "https://www.futurelearn.com/courses/categories/history"; 						//FutureLearn: History 
+		String url6 = "https://www.futurelearn.com/courses/categories/languages-and-cultures"; 			//FutureLearn: Languages & Cultures
+		String url7 = "https://www.futurelearn.com/courses/categories/law"; 							//FutureLearn: Law
+		String url8 = "https://www.futurelearn.com/courses/categories/literature"; 						//FutureLearn: Literature
+		String url9 = "https://www.futurelearn.com/courses/categories/nature-and-environment"; 			//FutureLearn: Nature & Environment 
+		String url10 = "https://www.futurelearn.com/courses/categories/online-and-digital";				//FutureLearn: Online & Digital 
+		String url11 = "https://www.futurelearn.com/courses/categories/politics-and-the-modern-world"; 	//FutureLearn: Politics & the Modern World 
+		String url12 = "https://www.futurelearn.com/courses/categories/science-maths-and-technology"; 	//FutureLearn: Science, Maths, & Technology 
+		String url13 = "https://www.futurelearn.com/courses/categories/sport-and-leisure";				//FutureLearn: Sport & Leisure
 		
 		//Data Columns
                 String title = "";
@@ -82,18 +82,18 @@ public class FutureLearn
 		//Arraylist urlXSS contains the URLS that this program will XSS with JSOUP
 		ArrayList urlXSS = new ArrayList<String>(); //Array which will store each course URLs 
 		urlXSS.add(url1);
-//		urlXSS.add(url2);
-//		urlXSS.add(url3);
-//		urlXSS.add(url4);
-//		urlXSS.add(url5);
-//		urlXSS.add(url6);
-//		urlXSS.add(url7);
-//		urlXSS.add(url8);
-//		urlXSS.add(url9);
-//		urlXSS.add(url10);
-//		urlXSS.add(url11);
-//		urlXSS.add(url12);
-//		urlXSS.add(url13);
+		urlXSS.add(url2);
+		urlXSS.add(url3);
+		urlXSS.add(url4);
+		urlXSS.add(url5);
+		urlXSS.add(url6);
+		urlXSS.add(url7);
+		urlXSS.add(url8);
+		urlXSS.add(url9);
+		urlXSS.add(url10);
+		urlXSS.add(url11);
+		urlXSS.add(url12);
+		urlXSS.add(url13);
 		
 		//REGISTER JDBC Driver 
 		Class.forName("com.mysql.jdbc.Driver").newInstance();
@@ -108,7 +108,7 @@ public class FutureLearn
 		{
 			String furl = (String) urlXSS.get(i);  //get website url
 			System.out.println("URL: " + furl); //return the website url
-			Document doc = Jsoup.connect(furl).get(); //get HTML code from the website
+			Document doc = Jsoup.connect(furl).timeout(10000).get(); //get HTML code from the website
 			//System.out.println("HTML document: " + doc); // return the HTML code from the website
 			
                         //Extract category
@@ -121,7 +121,7 @@ public class FutureLearn
                        
 			ArrayList courseNames = new ArrayList<String>(); //holds the course names
 			ArrayList courseLinks = new ArrayList<String>(); //holds the course links
-			//System.out.println(link.size());
+			
                         System.out.println(pictures.size());
                         System.out.println(link.size());
                         
@@ -130,35 +130,27 @@ public class FutureLearn
                                 courseImage = pictures.get(j).attr("data-src");
                                 //System.out.println("Course image is: " + courseImage);
 				String courseName = link.get(j).text();
+                                //Extract Short Description
                                 shortDesc = link.get(j).select("section[class*=media_description]").select("p[class*=introduction]").text();
                                 System.out.println(shortDesc);
+                                //Sanitize Short Description
+                                shortDesc = shortDesc.replace("'", "\\'");
 				String courseLink = link.get(j).select("header").select("h2[class*=title]").select("a").attr("href");
                                 String courseNombre = link.get(j).select("header").select("h2[class*=title]").select("a").attr("title");
-                                
-                                //System.out.println(courseLink);
-                                //System.out.println(temp);
-                                /*
-				if(courseName.equals("") || courseName.equals("More") || courseName.equals("Courses") || courseName.equals("View all categories"))
-				{
-					//don't add to courseNames
-				}
-                                */
-				//else
-				//{
-					courseNames.add(courseNombre);
-                                        System.out.println(courseNames.get(j));
-					courseLinks.add(courseLink);
-				//}
+                                courseNames.add(courseNombre);
+                                System.out.println(courseNames.get(j));
+                                courseLinks.add(courseLink);
                                 System.out.println("Course Name: " + courseNames.get(j));
 				System.out.println("Course LinkL " + courseLinks.get(j));
                                 String courseP4ge = "http://www.futurelearn.com" + courseLinks.get(j);
-                                Document coursePage = Jsoup.connect(courseP4ge).get();
-                                courseLinkz = courseP4ge;
-                                //Begin Extraction
+                                Document coursePage = Jsoup.connect(courseP4ge).timeout(10000).get();
                                 
+                                //Begin Extraction
+                                //Extract Course Link
+                                courseLinkz = courseP4ge;
                                 //Extract Title
                                 Elements titlez = coursePage.select("title");
-                                title = titlez.get(0).text();
+                                title = titlez.get(0).text().replace("'", "\\'");
                                 System.out.println(title);
                                 //Extract University
                                 Elements affiliate = coursePage.select("li[class*=run-organisation]").select("a");
@@ -186,9 +178,12 @@ public class FutureLearn
                                     courseFee = -1; //Don't really see a class that isn't free
                                 }
                                 courseLength = Integer.parseInt(feeLengthCert.get(1).text().substring(10,11));
-                                if(feeLengthCert.get(3).text().equalsIgnoreCase("Certificates Available"))
+                                if(feeLengthCert.size()==4)
                                 {
-                                    certificate = true;
+                                    if(feeLengthCert.get(3).text().equalsIgnoreCase("Certificates Available"))
+                                    {
+                                        certificate = true;
+                                    }
                                 }
                                 else
                                 {
@@ -202,36 +197,36 @@ public class FutureLearn
                                 Elements longDes = coursePage.select("div[class*=run-overview-main]").select("p");
                                 for(int z = 0; z<longDes.size(); z++)
                                 {
-                                    longDesc = longDesc + longDes.get(z).text();
-                                    //System.out.println(longDesc);
+                                    longDesc = longDesc + " " + longDes.get(z).text();
+                                    
                                 }
-                                //System.out.println(longDesc);
+
 				System.out.println();
                                 //Extract Start Date
                                 startDate = coursePage.select("time[itemprop*=startDate]").attr("dateTime");
                                 System.out.println(startDate);
-			Statement statement = connection.createStatement();
-                        URLEncoder a;
-                        String query;
-                        longDesc = longDesc.replace("'", "\\'");
-                        String cert = "";
-                        if(certificate)
-                        {
-                            cert = "yes";
-                        }
-                        else
-                        {
-                            cert = "false";
-                        }
-                        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-                        Calendar cal = Calendar.getInstance();
-                        timeScraped = dateFormat.format(cal.getTime());
-                        timeScraped = timeScraped.replace("/", "-");
-                        query = "INSERT into course_data values(null,'"+title+"','"+shortDesc+"','"+longDesc+"','"+courseLinkz+"','"+videoLinkz+"','"+startDate+"','"+courseLength+"','"+courseImage+"','"+category+"','"+site+"','"+courseFee+"','"+language+"','"+cert+"','"+university+ "','" + timeScraped +"')";
-			System.out.println(query);
-                        
-                        statement.executeUpdate(query);
-                        statement.close();
+                                Statement statement = connection.createStatement();
+                                String query;
+                                longDesc = longDesc.replace("'", "\\'");
+                                String cert = "";
+                                if(certificate)
+                                {
+                                    cert = "yes";
+                                }
+                                else
+                                {
+                                    cert = "no";
+                                }
+                                DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                                Calendar cal = Calendar.getInstance();
+                                timeScraped = dateFormat.format(cal.getTime());
+                                timeScraped = timeScraped.replace("/", "-");
+                                query = "INSERT into course_data values(null,'"+title+"','"+shortDesc+"','"+longDesc+"','"+courseLinkz+"','"+videoLinkz+"','"+startDate+"','"+courseLength+"','"+courseImage+"','"+category+"','"+site+"','"+courseFee+"','"+language+"','"+cert+"','"+university+ "','" + timeScraped +"')";
+                                System.out.println(query);
+                                statement.executeUpdate(query);
+                                statement.close();
+                                
+                                longDesc = "";
 			}
 		} //end loop
         }//end main
