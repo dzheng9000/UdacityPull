@@ -88,21 +88,25 @@ public class FutureLearn
 		{
 			String furl = (String) urlXSS.get(i);  //get website url
 			System.out.println("URL: " + furl); //return the website url
-			Document doc = Jsoup.connect(furl).get(); //get HTML code from the website
+			Document doc = Jsoup.connect(furl).get(); //get HTML code from the urlXSS.get(i)
 			//System.out.println("HTML document: " + doc); // return the HTML code from the website
 			
+			//***************************************************************************
 			//ELEMENTS
 			Elements link = doc.select("a[href*=courses]"); //get links with hyperlinks containing /courses/
 			Elements short_desc = doc.select("p[class=introduction]"); //get short descriptions of each course
 			
+			//***************************************************************************
 			//Arraylist for Course Information 
 			ArrayList courseNames = new ArrayList<String>(); //holds the course names
 			ArrayList courseLinks = new ArrayList<String>(); //holds the course links
-			ArrayList courseShortDescriptions = new ArrayList<String>();
+			ArrayList courseShort_desc = new ArrayList<String>();
+			ArrayList courseLong_desc = new ArrayList<String>();
 			
 			//System.out.println(link.size());
 			for(int j = 0; j < link.size(); j++) //NOTE: LINKS SIZE IS 61 (AKO 11/7/15 3:40pm)
 			{
+				//***************************************************************************
 				//ADDING COURSE NAMES + COURSE LINKS
 				String courseName = link.get(j).text(); //course name 
 				String courseLink = link.get(j).attr("href"); //course link
@@ -120,36 +124,41 @@ public class FutureLearn
 				}
 			}
 	
+			//***************************************************************************
 			//ADD SHORT DESCRIPTIONS 
-			for(int j = 0; j < courseNames.size(); j++)
+			int numOfCourses = courseNames.size();
+			for(int j = 0; j < numOfCourses; j++)
 			{
-				String shortDescription = short_desc.get(j).text();
-				courseShortDescriptions.add(shortDescription);
+				String shortDescription = short_desc.get(j).text(); //get course short description text
+				courseShort_desc.add(shortDescription); //add course short description text to courseShort_desc
 			}
 			
-			/*
-			  TEST CASES
-			  System.out.println("furl: " + furl);
-			  System.out.println("doc: " + doc);
-			  System.out.println("link: " + link);
-			  System.out.println(courseNames.size());
-				for(int a = 0; a < courseNames.size(); a++)
-				{
-					System.out.println("Course Name: " + courseNames.get(a));
-					System.out.println("Course Link: " + courseLinks.get(a));
-					System.out.println("Course Short Description: " + courseShortDescriptions.get(a));
-					System.out.println();
-				}
-			END: TEST
-			*/
-			
-			for(int a = 0; a < courseNames.size(); a++)
+			//***************************************************************************
+			//LONG DESCRIPTION 
+			for(int j = 0; j < courseLinks.size(); j++)
 			{
-				System.out.println("Course Name: " + courseNames.get(a));
-				System.out.println("Course Link: " + courseLinks.get(a));
-				System.out.println("Course Short Description: " + courseShortDescriptions.get(a));
-				System.out.println();
+				String courseURL = (String) courseLinks.get(j);
+				//System.out.println("Course URL: " + courseURL); //return the website url
+				Document courseDoc = Jsoup.connect(furl).get(); //get HTML code from the courseLinks.get(j)
+				//System.out.println("HTML document: " + doc); // return the HTML code from the website
+				
+				//stuck here
+				Elements long_desc = doc.select("div"); //get long descriptions of each course
+				String longDescription = long_desc.text();
+				//courseLong_desc.add(longDescription);
+				System.out.println(longDescription);
 			}
+			
+			//Document doc = Jsoup.connect(furl).get()
+
+//			for(int a = 0; a < courseNames.size(); a++)
+//			{
+//				System.out.println("Course Name: " + courseNames.get(a));
+//				System.out.println("Course Link: " + courseLinks.get(a));
+//				System.out.println("Course Short Description: " + courseShort_desc.get(a));
+//				System.out.println("Course Long Description: " + courseLong_desc.get(a));
+//				System.out.println();
+//			}
 			
 		} //end loop
 		}//end main
