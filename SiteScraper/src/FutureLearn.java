@@ -1,5 +1,3 @@
-package FutureLearn;
-
 import java.io.BufferedReader;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
