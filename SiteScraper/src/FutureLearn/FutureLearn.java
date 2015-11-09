@@ -118,15 +118,20 @@ public class FutureLearn
 			//Find the courseNames
 			Elements link = doc.select("div[class*=m-course-run__main");//("a[href*=courses]"); //get links with hyperlinks containing /courses/
 			Elements pictures = doc.select("img[class*=js-lazyload]");
-                       
+                        Elements univer = doc.select("h3");
+                        System.out.println("Universities: " + univer.size());
 			ArrayList courseNames = new ArrayList<String>(); //holds the course names
 			ArrayList courseLinks = new ArrayList<String>(); //holds the course links
-			
+			ArrayList shortDescs = new ArrayList <String>();
+                        
                         System.out.println(pictures.size());
                         System.out.println(link.size());
                         
 			for(int j = 0; j < pictures.size() ; j++)
 			{
+                                //Extract University
+                                university = univer.get(j).select("a").text().replace("'", "\\'");
+                                //Extract Course Image
                                 courseImage = pictures.get(j).attr("data-src");
                                 //System.out.println("Course image is: " + courseImage);
 				String courseName = link.get(j).text();
@@ -135,14 +140,26 @@ public class FutureLearn
                                 System.out.println(shortDesc);
                                 //Sanitize Short Description
                                 shortDesc = shortDesc.replace("'", "\\'");
+                                if(!shortDescs.contains(shortDesc))
+                                {
+                                    shortDescs.add(shortDesc);
+                                    
+                                }
+                                
+                                else
+                                {
+                                    System.out.println("YAYSZ");
+                                    //i = Integer.MAX_VALUE;
+                                   continue;
+                                }
 				String courseLink = link.get(j).select("header").select("h2[class*=title]").select("a").attr("href");
                                 String courseNombre = link.get(j).select("header").select("h2[class*=title]").select("a").attr("title");
-                                courseNames.add(courseNombre);
-                                System.out.println(courseNames.get(j));
-                                courseLinks.add(courseLink);
-                                System.out.println("Course Name: " + courseNames.get(j));
-				System.out.println("Course LinkL " + courseLinks.get(j));
-                                String courseP4ge = "http://www.futurelearn.com" + courseLinks.get(j);
+                                //courseNames.add(courseNombre);
+                                //System.out.println(courseNames.get(j));
+                                //courseLinks.add(courseLink);
+                                //System.out.println("Course Name: " + courseNames.get(j));
+				//System.out.println("Course LinkL " + courseLinks.get(j));
+                                String courseP4ge = "http://www.futurelearn.com" + courseLink;
                                 Document coursePage = Jsoup.connect(courseP4ge).timeout(10000).get();
                                 
                                 //Begin Extraction
@@ -152,6 +169,7 @@ public class FutureLearn
                                 Elements titlez = coursePage.select("title");
                                 title = titlez.get(0).text().replace("'", "\\'");
                                 System.out.println(title);
+                                /*
                                 //Extract University
                                 Elements affiliate = coursePage.select("li[class*=run-organisation]").select("a");
                                 for(int z = 0; z<affiliate.size(); z++)
@@ -159,7 +177,7 @@ public class FutureLearn
                                     System.out.println(affiliate.get(z).attr("href"));
                                     university = affiliate.get(z).attr("href");
                                 }
-                                
+                                */
                                 //Extract Video Link
                                 Elements videoLink = coursePage.select("video").select("source");
                                 for(int z = 0; z<videoLink.size(); z++)
@@ -224,6 +242,7 @@ public class FutureLearn
                                 query = "INSERT into course_data values(null,'"+title+"','"+shortDesc+"','"+longDesc+"','"+courseLinkz+"','"+videoLinkz+"','"+startDate+"','"+courseLength+"','"+courseImage+"','"+category+"','"+site+"','"+courseFee+"','"+language+"','"+cert+"','"+university+ "','" + timeScraped +"')";
                                 System.out.println(query);
                                 statement.executeUpdate(query);
+                                
                                 statement.close();
                                 
                                 longDesc = "";

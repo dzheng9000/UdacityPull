@@ -44,15 +44,36 @@
 	$course_length = $course["expected_duration"];
 	$course_image = mysql_real_escape_string($course["image"]);
 	$category = mysql_real_escape_string($course["subtitle"]);
-	$site = mysql_real_escape_string($course["homepage"]);
+	$site = "Udacity";
 	$course_fee = "$0";
 	$language = "English";
 	$certificate = $course["full_course_available"];
-	$university = "";//$course["affiliates"];
-	$time_scraped = "";
+	if(count($course["affiliates"]) > 0)
+	{
+		$university = $course["affiliates"][0]["name"];
+	}
+	else
+	{
+		$university = "";
+	}
+	//$time_scraped = date("Y-m-d"). " ". date("h:i:sa");
+	date_default_timezone_set("America/Los_Angeles");
+	$time_scraped = date("Y-m-d"). " ". date("G:i:s");
+	if($course["expected_duration_unit"] == "days")
+	{
+		$course_length = 1;
+	}
+	else if($course["expected_duration_unit"] == "months")
+	{
+		$course_length = $course_length * 4;
+	}
+	else
+	{
+		//do nothing. Leave in weeks formation
+	}
     $sql = "INSERT INTO course_data (id, title, short_desc, long_desc, course_link, video_link,
 	start_date, course_length, course_image, category, site, course_fee, language, certificate, university, time_scraped) 
-	VALUES ('$id', '$title', '$short_desc', '$long_desc', '$course_link', '$video_link', '$start_date', '$course_length', 
+	VALUES ('', '$title', '$short_desc', '$long_desc', '$course_link', '$video_link', '$start_date', '$course_length', 
     '$course_image','$category', '$site', '$course_fee', '$language', '$certificate', '$university', '$time_scraped')";
 
 	if ($conn->query($sql) === TRUE) 
