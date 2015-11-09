@@ -1,10 +1,14 @@
+import java.io.BufferedReader;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import org.jsoup.nodes.Element;
 import java.sql.*;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.SocketTimeoutException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -21,8 +25,8 @@ import java.util.Calendar;
  * courseNames = holds the courseNames
  * courseLinks = holds the courseLinks
  * 
- * @author alvin ko 
- * @author dave tseng
+ * @author Alvin Ko
+ * @author Dave Zheng
  *
  */
 public class FutureLearn
@@ -76,7 +80,7 @@ public class FutureLearn
                 boolean certificate = false;
                 String university = "";
                 String timeScraped = "";
-                
+                int dbTemp = 1;
                 
                 
 		//Arraylist urlXSS contains the URLS that this program will XSS with JSOUP
@@ -243,10 +247,32 @@ public class FutureLearn
                                 System.out.println(query);
                                 statement.executeUpdate(query);
                                 
+                                String instrName = coursePage.select("div[class*=educator]").select("div[class*=names]").select("a").get(0).text();
+                                if(instrName.length()>30)
+                                {
+                                    instrName = instrName.substring(0,30);
+                                }
+                                instrName = instrName.replace("'","\\'");
+                                String instrImg = coursePage.select("div[class*=educator]").select("a").select("img").get(0).attr("src");
+                                
+                                query = "INSERT into coursedetails values(null, '" +instrName + "','" +instrImg + "','" + dbTemp + "')";
+                                //System.out.println(instrName + " " + instrImg);
+                                dbTemp++;
+                                System.out.println(query);
+                                statement.executeUpdate(query);
                                 statement.close();
                                 
                                 longDesc = "";
 			}
-		} //end loop
+		}//end loop
+                URL udacity = new URL("http://localhost/webscrape/udacity_scrape.php");
+                URLConnection uda = udacity.openConnection();
+                BufferedReader in = new BufferedReader(new InputStreamReader(uda.getInputStream()));
+                String inputLine;
+                while ((inputLine = in.readLine()) != null) 
+                {
+                    System.out.println(inputLine);
+                }
+                in.close();
         }//end main
 }

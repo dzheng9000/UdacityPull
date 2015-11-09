@@ -27,11 +27,16 @@
   $certificate;
   $university;
   $time_scraped;
+  $profName = "";
+  $profImg = ""; 
+  $largest_id = 1;
+  $j = 3;
+  $z = 0;
   foreach ($json_response["courses"] as $course) 
   {
     //echo $course["title"], "<br>";
     //echo $course["homepage"], "<br>";
-	$id = mysql_real_escape_string($course["key"]);
+	$id = 0;
 	$title = mysql_real_escape_string($course["title"]);
 
 	$short_desc = mysql_real_escape_string($course["short_summary"]);
@@ -48,6 +53,24 @@
 	$course_fee = "$0";
 	$language = "English";
 	$certificate = $course["full_course_available"];
+	$sql = "SELECT id from course_data";
+	$result = mysqli_query($conn, $sql);
+
+	if (mysqli_num_rows($result) > 0) 
+	{
+		// output data of each row
+		while($row = mysqli_fetch_assoc($result)) 
+		{
+			//echo "id: " . $row["id"]. "<br>";
+			$largest_id = $row["id"];
+		}
+		$largest_id++;
+	}
+	else 
+	{
+		echo "0 results";
+	}
+
 	if(count($course["affiliates"]) > 0)
 	{
 		$university = $course["affiliates"][0]["name"];
@@ -73,7 +96,7 @@
 	}
     $sql = "INSERT INTO course_data (id, title, short_desc, long_desc, course_link, video_link,
 	start_date, course_length, course_image, category, site, course_fee, language, certificate, university, time_scraped) 
-	VALUES ('', '$title', '$short_desc', '$long_desc', '$course_link', '$video_link', '$start_date', '$course_length', 
+	VALUES ('$id', '$title', '$short_desc', '$long_desc', '$course_link', '$video_link', '$start_date', '$course_length', 
     '$course_image','$category', '$site', '$course_fee', '$language', '$certificate', '$university', '$time_scraped')";
 
 	if ($conn->query($sql) === TRUE) 
@@ -85,6 +108,31 @@
 	{
 		echo  "Error: " . $sql . "<br>" . "<b>" .$conn->error . "</b>";
 	}
+	
+	for($i = 0; $i<1; $i++ )
+	{
+		//echo $j . "<br>";
+		//echo $z . "<br>";
+		$profName = $course["instructors"][$i]["name"];
+		$profImg = $course["instructors"][$i]["image"];
+		//$courseName = mysql_real_escape_string($course["title"]);
+		
+		
+		
+		$sql = "INSERT INTO coursedetails VALUES (null,'$profName', '$profImg', '$largest_id')";
+		if ($conn->query($sql) === TRUE) 
+		{
+
+			echo "New record created successfully";
+		} 
+		else 
+		{
+			echo  "Error: " . $sql . "<br>" . "<b>" .$conn->error . "</b>";
+		}
+		$largest_id++;
+	//$z++;
+	}
+	
   }
   $conn->close();
 ?>
